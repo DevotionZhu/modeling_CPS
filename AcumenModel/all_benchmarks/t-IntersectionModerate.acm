@@ -1,0 +1,60 @@
+model Main(simulator) =
+initially
+	lTPoseX = [-3.2 .. -3.0],
+	lTPoseX' = [1.0 .. 1.0],
+	lTPoseX'' = [0.0 .. 0.0], 
+	lTPoseY = [-0.3 .. -0.3], 
+	lTPoseY' = [0.0 .. 0.0], 
+	lTPoseY'' = [0.0 .. 0.0],
+	rTPoseX = [2.8 .. 3.0],
+	rTPoseX' = [-1.0 .. -0.9],
+	rTPoseX'' = [0.0 .. 0.0], 
+	rTPoseY = [0.0 .. 0.0], 
+	rTPoseY' = [0.0 .. 0.0], 
+	rTPoseY'' = [0.0 .. 0.0],
+	carPoseX = [0.0 .. 0.1], 
+	carPoseX' = [0.0 .. 0.0], 
+	carPoseX'' = [0.0 .. 0.0], 
+	carPoseY = [-3.1 .. -3.0], 
+	carPoseY' = [1.0 .. 1.0], 
+	carPoseY'' = [0.0 .. 0.0],
+	carHeading = [1.570748 .. 1.745281], 
+	carHeading' = [0.0 .. 0.0],
+	mode = "Coasting"
+always  
+  match mode with [
+  "Coasting" -> if carPoseY <= [-1.0 .. -1.0] then 
+                   carPoseY' = [1.0 .. 1.0],
+                   carPoseX' = [0.0 .. 0.0],
+                   carHeading' = [0 .. 0],
+                   lTPoseX' = [1.0 .. 1.1],  lTPoseY' = [0.0 .. 0.0],
+                   rTPoseX' = [-1.0 .. -0.9],   rTPoseY' = [0.0 .. 0.0]
+                else
+                   mode += "Passing"
+| "Passing" -> if  carHeading <= [3.141592 .. 3.141592] then
+                  carHeading' = [1.0 .. 1.0],
+                  carPoseY' = 1.0*sin(carHeading),
+                  carPoseX' = 1.0*cos(carHeading),
+                  lTPoseX'' = -carPoseY - lTPoseX',  lTPoseY'' = [0.0 .. 0.0],
+                  rTPoseX'' = -carPoseY - rTPoseX',   rTPoseY' = [0.0 .. 0.0]              
+                else
+                  mode += "Accelerating"
+| "Accelerating" -> if carPoseX <= [0.0 .. 0.0] then
+                       carPoseY' = [0.0 .. 0.0],
+                       carPoseX' = [-1.0 .. -1.0],
+                       carHeading' = [0.0 .. 0.0],
+                       lTPoseX' = [1.0 .. 1.0],  lTPoseY' = [0.0 .. 0.0],
+                       rTPoseX'' = [-1.0 .. -1.0],  rTPoseY'' = [0.0 .. 0.0]            
+                    else
+                       mode += "Stop"
+|"Stop" ->
+                       carPoseY' = [0.0 .. 0.0],
+                       carPoseX' = [-1.0 .. -1.0],
+                       carHeading' = [0.0 .. 0.0],
+                       lTPoseX' = [1.0 .. 1.0],  lTPoseY' = [0.0 .. 0.0],
+                       rTPoseX'' = [-1.0 .. -1.0],  rTPoseY'' = [0.0 .. 0.0]
+                    ],
+simulator.endTime += 6,
+simulator.timeStep += 0.01
+
+

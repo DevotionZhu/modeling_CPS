@@ -1,0 +1,23 @@
+model Main(simulator) =
+initially
+	clearance =  sqrt(5^2 + 3^2),
+	truckPoseX = [-3.1 .. -2.9],
+	truckPoseX' = [1 .. 1], 
+	truckPoseX'' = [0 .. 0],
+	truckPoseY = 0,
+	truckPoseY' = 0,
+	truckPoseY'' = 0,
+	carPoseX = [0 .. 0],
+	carPoseX' = [0 .. 0], 
+	carPoseX'' = [0 .. 0],
+	carPoseY = [-5.1 .. -4.9],
+	carPoseY' = [2 .. 2],
+	carPoseY'' = [0 .. 0]
+always
+	truckPoseX'' = (0.6)*sqrt(truckPoseX^2 + carPoseY^2)-(truckPoseX'),
+	truckPoseY' = 0,
+	carPoseX' = 0,
+	carPoseY'' = (0.2)*sqrt(truckPoseX^2 + carPoseY^2)+(truckPoseX' - carPoseY'),
+	clearance = sqrt((truckPoseX - carPoseX)^2 + (truckPoseY - carPoseY)^2),
+simulator.endTime += 4,
+simulator.timeStep += 0.01

@@ -1,0 +1,23 @@
+model Main(simulator) =
+initially
+  x = [-4 .. 4], 
+  x' = [0 .. 2],
+  x'' = [0 .. 0],
+  mode = "acceleration"
+always
+  match mode with [
+ "acceleration" ->  if x <= [100 .. 104] then
+               x'' = 20 - x'
+             else 
+               mode += "coast"         
+|"coast" ->  if x <= [140 .. 144] then
+               x' = 20
+             else
+               mode += "deceleration"
+ |"deceleration" -> if x >= 140 && x' >= 0 then
+               x'' = [-11 .. -9]
+             else
+               mode += "stop"
+ |"stop" -> x'' = [-11 .. -9] ],
+ simulator.endTime += 10,
+ simulator.timeStep+= 0.01

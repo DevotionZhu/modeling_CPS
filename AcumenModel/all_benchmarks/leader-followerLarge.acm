@@ -1,0 +1,15 @@
+model Main(simulator) =
+initially
+	leader_pose = [6 .. 6],
+ 	leader_pose' = [1 .. 1],
+	follower_pose = [-1 .. 1],
+	follower_pose' = [1 .. 1],
+	follower_pose'' = 0,
+	clearance = [5 .. 7], 
+	clearance' = 0
+always
+	clearance' = leader_pose' - follower_pose',
+	leader_pose' = 1,
+	follower_pose'' =(0.5)*(leader_pose - follower_pose) - follower_pose',                   
+simulator.endTime+ = 10,
+simulator.timeStep += 0.01

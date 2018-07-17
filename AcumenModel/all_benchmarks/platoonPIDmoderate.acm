@@ -1,0 +1,31 @@
+model Main(simulator) =
+initially
+	leader_pose = [15 .. 15],
+    leader_pose' = [1 .. 1.5],
+	leader_pose'' = [0 .. 0], 
+	first_pose  = [10 .. 10], 
+    first_pose'  = [4 .. 4.5],
+    first_pose''  = [0 .. 0],
+    d1 = [5 .. 5],
+    d1' = [0 .. 0],
+    second_pose = [5 .. 5],
+    second_pose' = [3 .. 3.5], 
+    second_pose'' = [0 .. 0],
+    d2 = [5 .. 5],
+    d2' = [0 .. 0],
+	third_pose  = [0 .. 0],
+    third_pose'  = [2 .. 2.5], 
+	third_pose''  = [0 .. 0], 
+	d3 = [5 .. 5],
+    d3' = [0 .. 0]
+
+always
+	leader_pose'' = 1,
+	first_pose'' =(0.5)*(leader_pose - first_pose) - first_pose',
+	second_pose'' =(0.5)*(first_pose - second_pose) - second_pose',
+	third_pose'' =(0.5)*(second_pose - third_pose) - third_pose',  
+	d1' = leader_pose' - first_pose',
+	d2' = first_pose' - second_pose',
+	d3' = second_pose' - third_pose',
+simulator.endTime+ = 10,
+simulator.timeStep += 0.01
