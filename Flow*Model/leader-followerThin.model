@@ -1,0 +1,35 @@
+continuous reachability
+{
+state var followerPose, followerSpeed, leaderPose, leaderSpeed, clearance, t
+setting
+{
+ fixed steps 0.01
+ time 10
+ remainder estimation 1e-2
+ identity precondition
+ gnuplot octagon t, clearance
+ fixed orders 7
+ cutoff 1e-10
+ precision 53
+ output leaderfollowerThin
+ print on
+}
+nonpoly ode
+  {
+   followerPose' = followerSpeed
+   leaderPose' = leaderSpeed
+   followerSpeed' = 0.5*(leaderPose -followerPose) - followerSpeed
+   leaderSpeed' = 0
+   clearance' = leaderSpeed - followerSpeed
+   t' = 1
+  } 
+ init
+ {
+    leaderPose in [6,6] 
+    followerPose in [0,0]
+    clearance in [6,6]
+    leaderSpeed in [1,1]
+    followerSpeed in [1,1]
+    t in [0,0]
+ }
+}

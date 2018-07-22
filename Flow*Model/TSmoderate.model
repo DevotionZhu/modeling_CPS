@@ -1,0 +1,67 @@
+hybrid reachability
+{
+ state var x, v, t
+setting 
+{ 
+  fixed steps 0.01
+  time 500
+  remainder estimation 1e-2
+  QR precondition
+  gnuplot octagon t, x
+  fixed orders 4
+  cutoff 1e-12
+  precision 53
+  output TSModerate
+  max jumps 100
+  print on
+}
+ modes
+ {
+   accel
+   {
+     poly ode 2
+     {
+       x' = v v' = 20 - v  t' = 1
+     }
+     inv { x in [0,102] }
+     }
+  coast
+  {
+   poly ode 2
+   { 
+    x' = 20 t' = 1
+   }
+    inv { x in [100,142] }
+   }
+  decel
+  {
+   poly ode 2
+   {
+    x' = v v' = -10 t' = 1
+   }
+   inv{x >= 140  v >= 0}
+   }
+ }
+ jumps
+ {
+  accel -> coast
+  guard { x >= 100 }
+  reset { v' := 20}
+  interval aggregation
+  coast -> decel
+  guard { x >= 140 }
+  reset { v' := 20}
+  interval aggregation
+ }
+ init 
+ {
+  accel
+  {
+   x in [0, 4]
+   v in [0, 2]
+   t in [0, 0] 
+  }
+ }
+}
+
+

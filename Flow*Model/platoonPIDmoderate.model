@@ -1,0 +1,47 @@
+continuous reachability
+{
+state var  leaderPose, leaderSpeed, firstPose, firstSpeed, secondPose, secondSpeed, thirdPose, thirdSpeed, d1, d2, d3, t
+setting
+{
+ fixed steps 0.01
+ time 10
+ remainder estimation 1e-2
+ identity precondition
+ gnuplot octagon t, d1
+ fixed orders 5
+ cutoff 1e-10
+ precision 53
+ output platoonPIDmoderate
+ print on
+}
+nonpoly ode
+  {
+   leaderPose' = leaderSpeed
+   firstPose'  = firstSpeed
+   secondPose' = secondSpeed
+   thirdPose'  = thirdSpeed
+   firstSpeed' = 0.5*(leaderPose -firstPose) - firstSpeed
+   secondSpeed' = 0.5*(firstPose -secondPose) - secondSpeed
+   thirdSpeed' = 0.5*(secondPose -thirdPose) - thirdSpeed
+   leaderSpeed' = [1,1]
+   d1' = leaderSpeed - firstSpeed
+   d2' = firstSpeed - secondSpeed
+   d3' = secondSpeed - thirdSpeed
+   t' = 1
+  } 
+ init
+ {
+    leaderPose in [15,15]
+    leaderSpeed in [1,1.5] 
+    firstPose in [10,10]
+    firstSpeed in [4,4.5]
+    secondPose in [5,5]
+    secondSpeed in [3,3.5]
+    thirdPose in [0,0]
+    thirdSpeed in [2,2.5]
+    d1 in [5,5]
+    d2 in [5,5]
+    d3 in [5,5]
+    t in [0,0]
+ }
+}
